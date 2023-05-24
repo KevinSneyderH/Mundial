@@ -14,7 +14,7 @@ public class Seleccion {
     String continente;
     String dt;
     String nacionalidad;
-    
+
     String grupo;
     String local;
     String visitante;
@@ -22,10 +22,9 @@ public class Seleccion {
     String continente_v;
     String goles_l;
     String goles_v;
-    
+
     String pagina;
     String contador;
-    
 
     public Seleccion() {
     }
@@ -36,15 +35,18 @@ public class Seleccion {
         this.dt = dt;
         this.nacionalidad = nacionalidad;
     }
-    public Seleccion(String nacionalidad) {
+
+    public Seleccion(String dt, String nacionalidad, String xd) {
         this.nacionalidad = nacionalidad;
+        this.dt = dt;
     }
+
     public Seleccion(String pagina, String contador){
         this.pagina = pagina;
         this.contador = contador;
     }
 
- public Seleccion(String grupo, String local, String visitante, String continente_l, String continente_v, String goles_l, String goles_v) {
+    public Seleccion(String grupo, String local, String visitante, String continente_l, String continente_v, String goles_l, String goles_v) {
         this.grupo = grupo;
         this.local = local;
         this.visitante = visitante;
@@ -69,10 +71,6 @@ public class Seleccion {
     public void setContador(String contador) {
         this.contador = contador;
     }
- 
- 
-
-    
 
     public void setGrupo(String grupo) {
         this.grupo = grupo;

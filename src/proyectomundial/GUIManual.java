@@ -1,21 +1,13 @@
 package proyectomundial;
 
 import java.awt.BorderLayout;
-import static java.awt.BorderLayout.SOUTH;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.io.File;
-import java.nio.charset.Charset;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Scanner;
 import javax.swing.BorderFactory;
@@ -31,13 +23,12 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
-import javax.swing.event.DocumentListener;
-
-import org.w3c.dom.events.DocumentEvent;
 import proyectomundial.DAO.SeleccionDAO;
 import proyectomundial.model.Seleccion;
 
 public class GUIManual extends JFrame {
+    
+    private String paginaVisitada;
 
     SeleccionDAO seleccionDAO = new SeleccionDAO();
 
@@ -73,6 +64,8 @@ public class GUIManual extends JFrame {
 
     private JPanel JPanelMenuAuditoria;
     private JLabel btnAuditoria;
+    
+    private JButton btnreiniciarVisitas;
 
     // Elementos de panel de contenido
     private JPanel jPanelRight;
@@ -97,6 +90,7 @@ public class GUIManual extends JFrame {
     }
 
     private void initComponents() {
+        paginaVisitada = null;
 
         // Inicializamos componentes del Menu Lateral
         jPanelLeft = new JPanel();
@@ -122,6 +116,8 @@ public class GUIManual extends JFrame {
 
         JPanelMenuAuditoria = new JPanel();
         btnAuditoria = new JLabel();
+        
+        
 
         // Pinta el logo de la aplicación
         pintarLogo();
@@ -206,7 +202,8 @@ public class GUIManual extends JFrame {
      * imagen de inicio de la aplicación
      */
     private void accionHome() {
-        seleccionDAO.Actualizarhome();
+        paginaVisitada = "Home";
+        seleccionDAO.ActualizarVistas(paginaVisitada);
         jLabelTop.setText("Home");
         //jLabelTopDescription.setText("Bievenido al sistema de gestión de mundiales de fútbol");
 
@@ -255,18 +252,30 @@ public class GUIManual extends JFrame {
         JTable visitasOpciones = new JTable(Datos, Columnas);
 
         visitasOpciones.setRowHeight(30);
+        
+        JButton btnreiniciarVisitas = new JButton();
+        btnreiniciarVisitas.setText("Reiniciar Visitas");
+        
+        btnreiniciarVisitas.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    
+                    seleccionDAO.reiniciarVisitas();
+                    accionAuditoria();
+                 }
+        });
 
         JPanel form = new JPanel();
         form.setLayout(new GridLayout(4, 1, 0, 0));
 
         JPanel seleccionesPanel = new JPanel();
         seleccionesPanel.setLayout(new BoxLayout(seleccionesPanel, BoxLayout.Y_AXIS));
-        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 410)));
+        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 199)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
 
         JScrollPane scrollPane = new JScrollPane(visitasOpciones);
         seleccionesPanel.add(form);
         seleccionesPanel.add(scrollPane);
+        seleccionesPanel.add(btnreiniciarVisitas);
 
         jPanelMain.removeAll();
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
@@ -310,9 +319,10 @@ public class GUIManual extends JFrame {
      * información de las selelecciones
      */
     private void accionSelecciones() {
+        paginaVisitada = "Selecciones";
         jLabelTop.setText("Selecciones");
         selecciones = seleccionDAO.getSeleccionesMatriz();
-        seleccionDAO.ActualizarSelecciones();
+        seleccionDAO.ActualizarVistas(paginaVisitada);
 
         // Si no hay selecciones cargadas, muestra el botón de carga de selecciones
         if (selecciones == null) {
@@ -376,9 +386,10 @@ public class GUIManual extends JFrame {
      * los resultados
      */
     private void accionResultados() {
+        paginaVisitada = "Resultados";
         jLabelTop.setText("Resultados");
         resultados = seleccionDAO.getResultadosMatriz();
-        seleccionDAO.ActualizarResultados();
+        seleccionDAO.ActualizarVistas(paginaVisitada);
         // Si no hay resultados cargados, muestra el botón de carga de resultados
         if (resultados == null) {
             jPanelMain.removeAll();
@@ -444,9 +455,10 @@ public class GUIManual extends JFrame {
      * información de los paneles
      */
     private void accionDashboardSel() {
+        paginaVisitada = "Dash Selecciones";
         jLabelTop.setText("Dash Selecciones");
         List<Seleccion> selecciones = seleccionDAO.getSelecciones();
-        seleccionDAO.ActualizarDashSelecciones();
+        seleccionDAO.ActualizarVistas(paginaVisitada);
         
 
         int TotalSelecciones = selecciones.size();
@@ -463,31 +475,34 @@ public class GUIManual extends JFrame {
         num3.setText("Cantidad Nacionalidades de los directores: " + nacionalidades);
 
         String Columnas[] = {"America del sur", "America del norte", "America Central", "África", "Asia", "Europa"};
-        String Columnas2[] = {"Nacionalidades Técnicos (Ranking)"};
+        String Columnas2[] = {"Técnico", "Nacionalidades"};
         JTable CantidadSelecciones = new JTable(Datos, Columnas);
         JTable CantidadNacionalidades = new JTable(Datos2, Columnas2);
         CantidadSelecciones.setRowHeight(30);
         CantidadNacionalidades.setRowHeight(30);
 
-        JPanel form = new JPanel();
-        form.setLayout(new GridLayout(4, 1, 0, 0));
-
         JPanel seleccionesPanel = new JPanel();
         seleccionesPanel.setLayout(new BoxLayout(seleccionesPanel, BoxLayout.Y_AXIS));
-        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 410)));
+        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 100)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
+        
+        JPanel rankingPanel = new JPanel();
+        rankingPanel.setLayout(new BoxLayout(rankingPanel, BoxLayout.X_AXIS));
+        rankingPanel.setPreferredSize((new java.awt.Dimension(620, 300)));
+        rankingPanel.setMaximumSize(jPanelRight.getPreferredSize());
 
         JScrollPane scrollPane = new JScrollPane(CantidadSelecciones);
         JScrollPane scrollPane2 = new JScrollPane(CantidadNacionalidades);
-        seleccionesPanel.add(form);
+
         seleccionesPanel.add(num1);
         seleccionesPanel.add(num2);
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(num3);
-        seleccionesPanel.add(scrollPane2);
+        rankingPanel.add(scrollPane2);
 
         jPanelMain.removeAll();
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
+        jPanelMain.add(rankingPanel, BorderLayout.PAGE_START );
         jPanelMain.repaint();
         jPanelMain.revalidate();
         jPanelMain.revalidate();
@@ -528,7 +543,9 @@ public class GUIManual extends JFrame {
      * información de los paneles
      */
     private void accionDashboardRes() {
-        seleccionDAO.ActualizarDashResultados();
+        paginaVisitada = "Dash Resultados";
+        btnDashboardRes.setText("Dash Resultados");
+        seleccionDAO.ActualizarVistas(paginaVisitada);
 
         String xd[][] = seleccionDAO.getSeleccionesMatriz();
 
@@ -561,9 +578,14 @@ public class GUIManual extends JFrame {
         golesTotales = golesLocal + golesVisitante;
 
         int promedioGoles = golesTotales / partidosCargados;
+        
+        JLabel PromedioGoles = new JLabel();
+        
+        PromedioGoles.setText("El promedio de goles es: "+promedioGoles);
 
         jPanelMain.removeAll();
         jPanelMain.add(a);
+        jPanelMain.add(PromedioGoles);
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }
@@ -743,9 +765,11 @@ public class GUIManual extends JFrame {
             // Se obtiene el archivo y se almancena en la variable f
             File f = new File(ruta);
             entrada = new Scanner(f);
+            
+            System.out.println(f);
 
             // Se define las dimensiones de la matriz de selecciones
-            resultados = new String[48][7];
+            resultados = new String[49][8];
             entrada.nextLine();
 
             int i = 0;
@@ -779,6 +803,7 @@ public class GUIManual extends JFrame {
      * "Continente L", "Continente V", "Goles L", "Goles V"} Columnas que se
      * corresponden son la información que fue leida desde el archivo csv
      */
+    
     public void pintarTablaResultados() {
 
         String[] columnNames = {"Grupo", "Local", "Visitante", "Continente L", "Continente V", "Goles L", "Goles V"};

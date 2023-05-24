@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JTextField;
 import proyectomundial.model.Seleccion;
+
 import proyectomundial.util.BasedeDatos;
-import static proyectomundial.util.BasedeDatos.ejecutarSQL;
 
 /**
  *
@@ -21,93 +21,68 @@ public class SeleccionDAO {
     public SeleccionDAO() {
         BasedeDatos.conectar();
     }
-    
+
     public boolean registrarSeleccion(Seleccion seleccion) {
-        
+
         String sql = "INSERT INTO k_hernandez8.seleccion (nombre, continente, dt, nacionalidad) values("
-                + "'" + seleccion.getNombre() + "', " 
-                + "'" + seleccion.getContinente() + "', " 
-                + "'" + seleccion.getDt() + "', " 
+                + "'" + seleccion.getNombre() + "', "
+                + "'" + seleccion.getContinente() + "', "
+                + "'" + seleccion.getDt() + "', "
                 + "'" + seleccion.getNacionalidad() + "')";
-        
+
         //BasedeDatos.conectar();
         boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
         //BasedeDatos.desconectar();
         return registro;
     }
-    
+
     public boolean registrarResultado(Seleccion resultado) {
-        
+
         String sql = "INSERT INTO k_hernandez8.partidos (nombre, continente, dt, nacionalidad) values("
-                + "'" + resultado.getGrupo() + "', " 
-                + "'" + resultado.getLocal() + "', " 
-                + "'" + resultado.getVisitante() + "', " 
+                + "'" + resultado.getGrupo() + "', "
+                + "'" + resultado.getLocal() + "', "
+                + "'" + resultado.getVisitante() + "', "
                 + "'" + resultado.getContinente_l() + "')"
-                + "'" + resultado.getContinente_v()+ "')"
+                + "'" + resultado.getContinente_v() + "')"
                 + "'" + resultado.getGoles_l() + "')"
                 + "'" + resultado.getGoles_v() + "')";
-        
-        
+
         //BasedeDatos.conectar();
         boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
         //BasedeDatos.desconectar();
         return registro;
     }
-    
-    public boolean Actualizarhome() {
-        
-        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = 'Home'"; 
+
+    public boolean ActualizarVistas(String pagina) {
+
+        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = '" + pagina + "'";
         //BasedeDatos.conectar();
         boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
         //BasedeDatos.desconectar();
         return registro;
     }
-    
-    public boolean ActualizarSelecciones() {
-        
-        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = 'Selecciones'"; 
+
+    public boolean reiniciarVisitas() {
+
+        String sql = "update k_hernandez8.auditoria set contador = 0 where pagina in ('Home', 'Selecciones', 'Dash Resultados', 'Dash Selecciones', 'Resultados')";
         //BasedeDatos.conectar();
         boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
         //BasedeDatos.desconectar();
         return registro;
     }
-    
-    public boolean ActualizarResultados() {
-        
-        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = 'Resultados'"; 
-        //BasedeDatos.conectar();
-        boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
-        //BasedeDatos.desconectar();
-        return registro;
-    }
-    public boolean ActualizarDashSelecciones() {
-        
-        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = 'Dash Selecciones'"; 
-        //BasedeDatos.conectar();
-        boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
-        //BasedeDatos.desconectar();
-        return registro;
-    }
-    public boolean ActualizarDashResultados() {
-        
-        String sql = "update k_hernandez8.auditoria set contador = contador + 1 where pagina = 'Dash Resultados'"; 
-        //BasedeDatos.conectar();
-        boolean registro = BasedeDatos.ejecutarActualizacionSQL(sql);
-        //BasedeDatos.desconectar();
-        return registro;
-    }
+
     public List<Seleccion> getNacionalidades() {
 
-        String sql = "select distinct nacionalidad  from k_hernandez8.seleccion";
+        String sql = "select distinct nacionalidad, dt from k_hernandez8.seleccion";
         List<Seleccion> selecciones = new ArrayList<Seleccion>();
 
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
 
-            if(result != null) {
+            if (result != null) {
 
                 while (result.next()) {
-                    Seleccion seleccion = new Seleccion(result.getString("nacionalidad"));
+                    Seleccion seleccion = new Seleccion(result.getString("dt"), result.getString("nacionalidad"), result.getString("dt"));
                     selecciones.add(seleccion);
                 }
             }
@@ -118,7 +93,7 @@ public class SeleccionDAO {
 
         return selecciones;
     }
-    
+
     public List<Seleccion> getVisitas() {
 
         String sql = "select distinct pagina, contador  from k_hernandez8.auditoria";
@@ -127,7 +102,7 @@ public class SeleccionDAO {
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
 
-            if(result != null) {
+            if (result != null) {
 
                 while (result.next()) {
                     Seleccion seleccion = new Seleccion(result.getString("pagina"), result.getString("contador"));
@@ -141,7 +116,7 @@ public class SeleccionDAO {
 
         return selecciones;
     }
-    
+
     public List<Seleccion> getSelecciones() {
 
         String sql = "SELECT distinct nombre, continente, dt, nacionalidad FROM k_hernandez8.seleccion";
@@ -150,7 +125,7 @@ public class SeleccionDAO {
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
 
-            if(result != null) {
+            if (result != null) {
 
                 while (result.next()) {
                     Seleccion seleccion = new Seleccion(result.getString("nombre"), result.getString("continente"), result.getString("dt"), result.getString("nacionalidad"));
@@ -166,21 +141,19 @@ public class SeleccionDAO {
         return selecciones;
     }
 
-    
-     public List<Seleccion> getResultados(){
+    public List<Seleccion> getResultados() {
 
+        String sql = "SELECT grupo, \"local\", visitante, continente_local, continente_visitante, goles_local, goles_visitante FROM k_hernandez8.partidos ";
 
-       String sql = "SELECT grupo, \"local\", visitante, continente_local, continente_visitante, goles_local, goles_visitante FROM k_hernandez8.partidos ";
-        
         List<Seleccion> busqueda = new ArrayList<Seleccion>();
-        
+
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
-            
-            if(result != null) {
-            
-                while (result.next()) { 
-                    Seleccion seleccion = new Seleccion(result.getString("grupo"), result.getString("local"), result.getString("visitante"), result.getString("continente_local"), result.getString("continente_visitante"), result.getString("goles_local"), result.getString("goles_visitante") );
+
+            if (result != null) {
+
+                while (result.next()) {
+                    Seleccion seleccion = new Seleccion(result.getString("grupo"), result.getString("local"), result.getString("visitante"), result.getString("continente_local"), result.getString("continente_visitante"), result.getString("goles_local"), result.getString("goles_visitante"));
                     busqueda.add(seleccion);
 
                 }
@@ -189,23 +162,23 @@ public class SeleccionDAO {
             System.out.println(e.toString());
             System.out.println("Error consultando selecciones");
         }
-        
+
         return busqueda;
 
     }
-    
-    public List<Seleccion> getBusquedaSelecciones(JTextField field){
-        
-        String sql = "SELECT DISTINCT s.* FROM k_hernandez8.seleccion s WHERE s.nombre ILIKE '"+field.getText()+"%';";
-        
+
+    public List<Seleccion> getBusquedaSelecciones(JTextField field) {
+
+        String sql = "SELECT DISTINCT s.* FROM k_hernandez8.seleccion s WHERE s.nombre ILIKE '" + field.getText() + "%';";
+
         List<Seleccion> busqueda = new ArrayList<Seleccion>();
-        
+
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
-            
-            if(result != null) {
-            
-                while (result.next()) { 
+
+            if (result != null) {
+
+                while (result.next()) {
                     Seleccion seleccion = new Seleccion(result.getString("nombre"), result.getString("continente"), result.getString("dt"), result.getString("nacionalidad"));
                     busqueda.add(seleccion);
                 }
@@ -214,28 +187,29 @@ public class SeleccionDAO {
             System.out.println(e.toString());
             System.out.println("Error consultando selecciones");
         }
-        
+
         return busqueda;
 
     }
-    public List<Seleccion> getBusquedaResultados(JTextField field){
+
+    public List<Seleccion> getBusquedaResultados(JTextField field) {
         String sql = null;
-        
-        if(field.getText().length() <= 1) {
-            sql = "select *from k_hernandez8.partidos s where grupo ilike '"+field.getText()+"%';";
-        }else {
-            sql = "select *from k_hernandez8.partidos s where \"local\" ilike '"+field.getText()+"%' or visitante ilike '"+field.getText()+"%'";
+
+        if (field.getText().length() <= 1) {
+            sql = "select *from k_hernandez8.partidos s where grupo ilike '" + field.getText() + "%';";
+        } else {
+            sql = "select *from k_hernandez8.partidos s where \"local\" ilike '" + field.getText() + "%' or visitante ilike '" + field.getText() + "%'";
         }
-        
+
         List<Seleccion> busqueda = new ArrayList<Seleccion>();
-        
+
         try {
             ResultSet result = BasedeDatos.ejecutarSQL(sql);
-            
-            if(result != null) {
-            
-                while (result.next()) { 
-                    Seleccion seleccion = new Seleccion(result.getString("grupo"), result.getString("local"), result.getString("visitante"), result.getString("continente_local"), result.getString("continente_visitante"), result.getString("goles_local"), result.getString("goles_visitante") );
+
+            if (result != null) {
+
+                while (result.next()) {
+                    Seleccion seleccion = new Seleccion(result.getString("grupo"), result.getString("local"), result.getString("visitante"), result.getString("continente_local"), result.getString("continente_visitante"), result.getString("goles_local"), result.getString("goles_visitante"));
                     busqueda.add(seleccion);
                 }
             }
@@ -243,53 +217,48 @@ public class SeleccionDAO {
             System.out.println(e.toString());
             System.out.println("Error consultando selecciones");
         }
-        
+
         return busqueda;
 
     }
-    
-     public String[][] getMatrizBusquedaSelecciones(JTextField field) {
-        
+
+    public String[][] getMatrizBusquedaSelecciones(JTextField field) {
+
         String[][] matrizbusqueda = null;
         List<Seleccion> selecciones = getBusquedaSelecciones(field);
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
+
+        if (selecciones != null && selecciones.size() > 0) {
+
             matrizbusqueda = new String[selecciones.size()][4];
 
             try {
                 int x = 0;
-            for (Seleccion seleccion : selecciones) {
+                for (Seleccion seleccion : selecciones) {
 
-                matrizbusqueda[x][0] = seleccion.getNombre();
-                matrizbusqueda[x][1] = seleccion.getContinente();
-                matrizbusqueda[x][2] = seleccion.getDt();
-                matrizbusqueda[x][3] = seleccion.getNacionalidad();
-                x++;
-            }
+                    matrizbusqueda[x][0] = seleccion.getNombre();
+                    matrizbusqueda[x][1] = seleccion.getContinente();
+                    matrizbusqueda[x][2] = seleccion.getDt();
+                    matrizbusqueda[x][3] = seleccion.getNacionalidad();
+                    x++;
+                }
             } catch (Exception e) {
-                
+
                 System.out.println("ERROR");
                 String[][] empty = new String[0][0];
                 return empty;
             }
         }
-        
+
         return matrizbusqueda;
     }
-     
-    
-     public String[][] getBusquedaResultadosMatriz(JTextField field) {
-        
+
+    public String[][] getBusquedaResultadosMatriz(JTextField field) {
+
         String[][] matrizSelecciones = null;
         List<Seleccion> selecciones = getBusquedaResultados(field);
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
+
+        if (selecciones != null && selecciones.size() > 0) {
+
             matrizSelecciones = new String[selecciones.size()][7];
 
             int x = 0;
@@ -305,19 +274,17 @@ public class SeleccionDAO {
                 x++;
             }
         }
-        
+
         return matrizSelecciones;
     }
 
     public String[][] getSeleccionesMatriz() {
-        
+
         String[][] matrizSelecciones = null;
         List<Seleccion> selecciones = getSelecciones();
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
+
+        if (selecciones != null && selecciones.size() > 0) {
+
             matrizSelecciones = new String[selecciones.size()][4];
 
             int x = 0;
@@ -330,19 +297,17 @@ public class SeleccionDAO {
                 x++;
             }
         }
-        
+
         return matrizSelecciones;
     }
-    
+
     public String[][] getVisitasMatriz() {
-        
+
         String[][] matrizVisitas = null;
         List<Seleccion> selecciones = getVisitas();
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
+
+        if (selecciones != null && selecciones.size() > 0) {
+
             matrizVisitas = new String[selecciones.size()][2];
 
             int x = 0;
@@ -353,36 +318,35 @@ public class SeleccionDAO {
                 x++;
             }
         }
-        
+
         return matrizVisitas;
     }
+
     public String[][] getNacionalidadesMatriz() {
-        
+
         String[][] matrizNaciaonalidades = null;
         List<Seleccion> selecciones = getNacionalidades();
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
-            matrizNaciaonalidades = new String[selecciones.size()][1];
+
+        if (selecciones != null && selecciones.size() > 0) {
+
+            matrizNaciaonalidades = new String[selecciones.size()][2];
 
             int x = 0;
             for (Seleccion seleccion : selecciones) {
-                matrizNaciaonalidades[x][0] = seleccion.getNacionalidad();
+                matrizNaciaonalidades[x][0] = seleccion.getDt();
+                matrizNaciaonalidades[x][1] = seleccion.getNacionalidad();     
                 x++;
             }
         }
-        
+
         return matrizNaciaonalidades;
     }
+
     public String[][] getSeleccionesMatrizCSV(ArrayList<Seleccion> seleccions) {
 
         String[][] matrizSelecciones = null;
 
-
-        if(seleccions != null && seleccions.size() > 0) {
-
+        if (seleccions != null && seleccions.size() > 0) {
 
             matrizSelecciones = new String[seleccions.size()][4];
 
@@ -400,16 +364,13 @@ public class SeleccionDAO {
         return matrizSelecciones;
     }
 
+    public String[][] getResultadosMatriz() {
 
-        public String[][] getResultadosMatriz() {
-        
         String[][] matrizSelecciones = null;
         List<Seleccion> selecciones = getResultados();
-        
-        
-        if(selecciones != null && selecciones.size() > 0) {
-            
-        
+
+        if (selecciones != null && selecciones.size() > 0) {
+
             matrizSelecciones = new String[selecciones.size()][7];
 
             int x = 0;
@@ -425,10 +386,11 @@ public class SeleccionDAO {
                 x++;
             }
         }
-        
+
         return matrizSelecciones;
     }
-        public String[][] CantidadSelecciones(List<Seleccion> selecciones) {
+
+    public String[][] CantidadSelecciones(List<Seleccion> selecciones) {
 
         int totalAmericaSur = 0;
         int totalAmericaNorte = 0;
@@ -467,5 +429,5 @@ public class SeleccionDAO {
 
         return Datos;
     }
-    
+
 }
