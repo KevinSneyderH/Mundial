@@ -27,7 +27,7 @@ import proyectomundial.DAO.SeleccionDAO;
 import proyectomundial.model.Seleccion;
 
 public class GUIManual extends JFrame {
-    
+
     private String paginaVisitada;
 
     SeleccionDAO seleccionDAO = new SeleccionDAO();
@@ -64,7 +64,7 @@ public class GUIManual extends JFrame {
 
     private JPanel JPanelMenuAuditoria;
     private JLabel btnAuditoria;
-    
+
     private JButton btnreiniciarVisitas;
 
     // Elementos de panel de contenido
@@ -116,8 +116,6 @@ public class GUIManual extends JFrame {
 
         JPanelMenuAuditoria = new JPanel();
         btnAuditoria = new JLabel();
-        
-        
 
         // Pinta el logo de la aplicación
         pintarLogo();
@@ -252,16 +250,16 @@ public class GUIManual extends JFrame {
         JTable visitasOpciones = new JTable(Datos, Columnas);
 
         visitasOpciones.setRowHeight(30);
-        
+
         JButton btnreiniciarVisitas = new JButton();
         btnreiniciarVisitas.setText("Reiniciar Visitas");
-        
+
         btnreiniciarVisitas.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                    
-                    seleccionDAO.reiniciarVisitas();
-                    accionAuditoria();
-                 }
+
+                seleccionDAO.reiniciarVisitas();
+                accionAuditoria();
+            }
         });
 
         JPanel form = new JPanel();
@@ -333,7 +331,6 @@ public class GUIManual extends JFrame {
             notSelecciones.setText("No hay selecciones cargadas, por favor cargue selecciones \n\n");
             seleccionesPanel.add(notSelecciones);
 
-            
             JButton cargarFile = new JButton();
             cargarFile.setText("Seleccione el archivo");
             seleccionesPanel.add(cargarFile);
@@ -459,7 +456,6 @@ public class GUIManual extends JFrame {
         jLabelTop.setText("Dash Selecciones");
         List<Seleccion> selecciones = seleccionDAO.getSelecciones();
         seleccionDAO.ActualizarVistas(paginaVisitada);
-        
 
         int TotalSelecciones = selecciones.size();
         int nacionalidades = seleccionDAO.getNacionalidades().size();
@@ -485,7 +481,7 @@ public class GUIManual extends JFrame {
         seleccionesPanel.setLayout(new BoxLayout(seleccionesPanel, BoxLayout.Y_AXIS));
         seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 100)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
-        
+
         JPanel rankingPanel = new JPanel();
         rankingPanel.setLayout(new BoxLayout(rankingPanel, BoxLayout.X_AXIS));
         rankingPanel.setPreferredSize((new java.awt.Dimension(620, 300)));
@@ -502,7 +498,7 @@ public class GUIManual extends JFrame {
 
         jPanelMain.removeAll();
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
-        jPanelMain.add(rankingPanel, BorderLayout.PAGE_START );
+        jPanelMain.add(rankingPanel, BorderLayout.PAGE_START);
         jPanelMain.repaint();
         jPanelMain.revalidate();
         jPanelMain.revalidate();
@@ -563,29 +559,66 @@ public class GUIManual extends JFrame {
                 + "Utilice los diferentes componentes gráficos para construir un dashboard lo más estético posible");
 
         int partidosCargados = seleccionDAO.getResultados().size();
-
+        String[] mastchMasGoles = new String[3];
+        String[] mastchMenosGoles = new String[3];
+        
         int golesTotales = 0;
         int golesLocal = 0;
         int golesVisitante = 0;
+        int partidoMasgoles = 0;
+        int partidoMenosgoles= 0;
+        int auxMaxGoles = 0;
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
 
-        for(int i = 0; i < Datos2.length; i++) {
+        for (int i = 0; i < Datos2.length; i++) {
             golesLocal += Integer.parseInt(Datos2[i][5]);
+             
            
             golesVisitante += Integer.parseInt(Datos2[i][6]);
+
+            int partidoActual = Integer.parseInt(Datos2[i][5]) + Integer.parseInt(Datos2[i][6]);
+
+            auxMaxGoles = partidoMasgoles;
+
+            if (partidoActual >= (auxMaxGoles)) {
+
+                partidoMasgoles = partidoActual;
+                mastchMasGoles[0] = Datos2[i][0];
+                mastchMasGoles[1] = Datos2[i][1];
+                mastchMasGoles[2] = Datos2[i][2];
+                
+            }
+            
+            if (partidoActual <= (auxMaxGoles)) {
+
+                partidoMenosgoles = partidoActual;
+                mastchMenosGoles[0] = Datos2[i][0];
+                mastchMenosGoles[1] = Datos2[i][1];
+                mastchMenosGoles[2] = Datos2[i][2];
+                
+            }
+           
+
         }
+        
         golesTotales = golesLocal + golesVisitante;
 
         int promedioGoles = golesTotales / partidosCargados;
-        
-        JLabel PromedioGoles = new JLabel();
-        
-        PromedioGoles.setText("El promedio de goles es: "+promedioGoles);
 
+        JLabel PromedioGoles = new JLabel();
+        JLabel PartidoMasGoles = new JLabel();
+
+        PromedioGoles.setText("Partidos cargados: " + partidosCargados + "\n"
+                + "El promedio de goles es: " + promedioGoles);
+
+        PartidoMasGoles.setText("Partido mas goles: "+mastchMasGoles[1]+" vs "+mastchMasGoles[2]+" con un total de "+partidoMasgoles+" goles.");
+        
+        
         jPanelMain.removeAll();
         jPanelMain.add(a);
         jPanelMain.add(PromedioGoles);
+        jPanelMain.add(PartidoMasGoles);
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }
@@ -765,7 +798,7 @@ public class GUIManual extends JFrame {
             // Se obtiene el archivo y se almancena en la variable f
             File f = new File(ruta);
             entrada = new Scanner(f);
-            
+
             System.out.println(f);
 
             // Se define las dimensiones de la matriz de selecciones
@@ -803,7 +836,6 @@ public class GUIManual extends JFrame {
      * "Continente L", "Continente V", "Goles L", "Goles V"} Columnas que se
      * corresponden son la información que fue leida desde el archivo csv
      */
-    
     public void pintarTablaResultados() {
 
         String[] columnNames = {"Grupo", "Local", "Visitante", "Continente L", "Continente V", "Goles L", "Goles V"};
