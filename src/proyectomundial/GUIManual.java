@@ -561,20 +561,19 @@ public class GUIManual extends JFrame {
         int partidosCargados = seleccionDAO.getResultados().size();
         String[] mastchMasGoles = new String[3];
         String[] mastchMenosGoles = new String[3];
-        
+
         int golesTotales = 0;
         int golesLocal = 0;
         int golesVisitante = 0;
         int partidoMasgoles = 0;
-        int partidoMenosgoles= 0;
+        int partidoMenosgoles = 0;
         int auxMaxGoles = 0;
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
 
         for (int i = 0; i < Datos2.length; i++) {
             golesLocal += Integer.parseInt(Datos2[i][5]);
-             
-           
+
             golesVisitante += Integer.parseInt(Datos2[i][6]);
 
             int partidoActual = Integer.parseInt(Datos2[i][5]) + Integer.parseInt(Datos2[i][6]);
@@ -587,38 +586,41 @@ public class GUIManual extends JFrame {
                 mastchMasGoles[0] = Datos2[i][0];
                 mastchMasGoles[1] = Datos2[i][1];
                 mastchMasGoles[2] = Datos2[i][2];
-                
+
             }
             
-            if (partidoActual <= (auxMaxGoles)) {
+            int auxMinGoles = partidoMenosgoles;
+
+            if (partidoActual <= (auxMinGoles)) {
 
                 partidoMenosgoles = partidoActual;
                 mastchMenosGoles[0] = Datos2[i][0];
                 mastchMenosGoles[1] = Datos2[i][1];
                 mastchMenosGoles[2] = Datos2[i][2];
-                
+                System.out.println(partidoMenosgoles);
+
             }
-           
 
         }
-        
+
         golesTotales = golesLocal + golesVisitante;
 
         int promedioGoles = golesTotales / partidosCargados;
 
         JLabel PromedioGoles = new JLabel();
         JLabel PartidoMasGoles = new JLabel();
-
+        JLabel PartidoMenosGoles = new JLabel();
         PromedioGoles.setText("Partidos cargados: " + partidosCargados + "\n"
                 + "El promedio de goles es: " + promedioGoles);
 
-        PartidoMasGoles.setText("Partido mas goles: "+mastchMasGoles[1]+" vs "+mastchMasGoles[2]+" con un total de "+partidoMasgoles+" goles.");
-        
-        
+        PartidoMasGoles.setText("Partido mas goles: " + mastchMasGoles[1] + " vs " + mastchMasGoles[2] + " con un total de " + partidoMasgoles + " goles.");
+        PartidoMenosGoles.setText("Partido menos goles: " + mastchMenosGoles[1] + " vs " + mastchMenosGoles[2] + " con un total de " + partidoMenosgoles + " goles.");
+
         jPanelMain.removeAll();
         jPanelMain.add(a);
         jPanelMain.add(PromedioGoles);
         jPanelMain.add(PartidoMasGoles);
+        jPanelMain.add(PartidoMenosGoles);
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }
