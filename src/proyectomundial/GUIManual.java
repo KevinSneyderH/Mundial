@@ -574,34 +574,37 @@ public class GUIManual extends JFrame {
         int numeroPartidosEmpatados = 0;
         int numeroPartidosGanador = 0;
 
-        
         String Datos[][] = seleccionDAO.getMatrizRankingGoles();
 
         String Datos3[][] = seleccionDAO.getMatrizRankingEquipos();
-        
+
         String Datos4[][] = seleccionDAO.getMatrizContinentesGoles();
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
-        
-        
+
+        String Datos5[][] = seleccionDAO.getMatrizClasificados();
 
         String Columnas[] = {"Equipos", "Goles Totales"};
 
         String Columnas2[] = {"Equipos", "Puntos"};
-        
+
         String Columnas3[] = {"Continentes", "Goles"};
+
+        String Columnas4[] = {"Equipo Clasificado", "Grupo", "Puntos"};
 
         JTable rankingGoles = new JTable(Datos, Columnas);
         JTable rankingEquipos = new JTable(Datos3, Columnas2);
         JTable continenteGoles = new JTable(Datos4, Columnas3);
-
+        JTable Clasificados = new JTable(Datos5, Columnas4);
         rankingEquipos.setRowHeight(30);
         rankingGoles.setRowHeight(30);
         continenteGoles.setRowHeight(30);
+        Clasificados.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(rankingGoles);
         JScrollPane scrollPane2 = new JScrollPane(rankingEquipos);
         JScrollPane scrollPane3 = new JScrollPane(continenteGoles);
+        JScrollPane scrollPane4 = new JScrollPane(Clasificados);
 
         for (int i = 0; i < Datos2.length; i++) {
             golesLocalTotales += Integer.parseInt(Datos2[i][5]);
@@ -666,20 +669,31 @@ public class GUIManual extends JFrame {
         gridlayout.setVgap(10);
         gridlayout.setHgap(10);
         seleccionesPanel.setLayout(gridlayout);
-        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 150)));
+        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 125)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
         seleccionesPanel.add(scrollPane3);
+        
+        
+        
+        
+        JPanel seleccionesPanel2 = new JPanel();
+        seleccionesPanel2.setLayout(new BoxLayout(seleccionesPanel2, BoxLayout.X_AXIS));
+        seleccionesPanel2.setPreferredSize((new java.awt.Dimension(620, 200)));
+        seleccionesPanel2.setMaximumSize(jPanelRight.getPreferredSize());
+        seleccionesPanel2.add(scrollPane4);
+
 
         jPanelMain.removeAll();
-     
+
         jPanelMain.add(PromedioGoles);
         jPanelMain.add(PartidoMasGoles);
         jPanelMain.add(PartidoMenosGoles);
         jPanelMain.add(PartidoEmpateOGanados);
         jPanelMain.add(PartidoEmpateOGanados);
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
+        jPanelMain.add(seleccionesPanel2, BorderLayout.PAGE_START);
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }

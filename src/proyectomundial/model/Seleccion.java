@@ -54,6 +54,12 @@ public class Seleccion {
         this.equipo = equipo;
         this.goles_totales = goles_totales;
     }
+    
+    public Seleccion(String equipo,String grupo, int goles_totales) {
+        this.equipo = equipo;
+        this.goles_totales = goles_totales;
+        this.grupo = grupo;
+    }
 
     public Seleccion(String grupo, String local, String visitante, String continente_l, String continente_v, String goles_l, String goles_v) {
         this.grupo = grupo;

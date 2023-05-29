@@ -154,6 +154,62 @@ public class SeleccionDAO {
         return equipos;
     }
 
+    public List<Seleccion> getClasificados() {
+
+        String sql = "WITH equipos_puntos_ranked AS (\n"
+                + "    SELECT equipo, grupo, total_puntos,\n"
+                + "           ROW_NUMBER() OVER (PARTITION BY grupo ORDER BY total_puntos DESC) AS ranking\n"
+                + "    FROM (\n"
+                + "        SELECT equipo, grupo, SUM(puntos) AS total_puntos\n"
+                + "        FROM (\n"
+                + "            SELECT \"local\" AS equipo, grupo,\n"
+                + "                   CASE\n"
+                + "                       WHEN goles_local > goles_visitante THEN 3\n"
+                + "                       WHEN goles_local = goles_visitante THEN 1\n"
+                + "                       ELSE 0\n"
+                + "                   END AS puntos\n"
+                + "            FROM k_hernandez8.partidos\n"
+                + "\n"
+                + "            UNION ALL\n"
+                + "\n"
+                + "            SELECT visitante AS equipo, grupo,\n"
+                + "                   CASE\n"
+                + "                       WHEN goles_visitante > goles_local THEN 3\n"
+                + "                       WHEN goles_visitante = goles_local THEN 1\n"
+                + "                       ELSE 0\n"
+                + "                   END AS puntos\n"
+                + "            FROM k_hernandez8.partidos\n"
+                + "        ) AS equipos_puntos\n"
+                + "        GROUP BY equipo, grupo\n"
+                + "    ) AS equipos_puntos_total\n"
+                + ")\n"
+                + "SELECT equipo, grupo, total_puntos\n"
+                + "FROM equipos_puntos_ranked\n"
+                + "WHERE ranking <= 2\n"
+                + "ORDER BY grupo, total_puntos DESC;";
+
+        List<Seleccion> equipos = new ArrayList<Seleccion>();
+
+        try {
+            ResultSet result = BasedeDatos.ejecutarSQL(sql);
+
+            if (result != null) {
+
+                while (result.next()) {
+                    
+                    Seleccion equipoGoles = new Seleccion(result.getString("equipo"), result.getString("grupo"), Integer.parseInt(result.getString("total_puntos")));
+                    System.out.println(result.getString("grupo"));
+                    equipos.add(equipoGoles);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println("Error consultando selecciones");
+        }
+
+        return equipos;
+    }
+
     public List<Seleccion> getContinentesGoles() {
 
         String sql = "SELECT continente, SUM(total_goles) AS goles_totales\n"
@@ -395,6 +451,31 @@ public class SeleccionDAO {
         return RankingGoles;
     }
 
+    public String[][] getMatrizClasificados() {
+        List<Seleccion> selecciones = getClasificados();
+
+        String[][] RankingGoles = null;
+
+        if (selecciones != null && selecciones.size() > 0) {
+            RankingGoles = new String[selecciones.size()][3];
+
+            try {
+                int x = 0;
+                for (Seleccion seleccion : selecciones) {
+                    RankingGoles[x][0] = seleccion.getEquipo();
+                    RankingGoles[x][1] = seleccion.getGrupo();
+                    RankingGoles[x][2] = String.valueOf(seleccion.getGoles());
+                    x++;
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR");
+                RankingGoles = new String[0][0];
+            }
+        }
+
+        return RankingGoles;
+    }
+
     public String[][] getMatrizRankingEquipos() {
         List<Seleccion> selecciones = getRankingEquipos();
 
@@ -418,7 +499,7 @@ public class SeleccionDAO {
 
         return RankingGoles;
     }
-    
+
     public String[][] getMatrizContinentesGoles() {
         List<Seleccion> selecciones = getContinentesGoles();
 
