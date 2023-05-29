@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
@@ -652,8 +653,11 @@ public class GUIManual extends JFrame {
         PartidoEmpateOGanados.setText("Cantidad de partidos empatados es: " + numeroPartidosEmpatados + " Cantidad de partidos ganados: " + numeroPartidosGanador);
 
         JPanel seleccionesPanel = new JPanel();
-        seleccionesPanel.setLayout(new BoxLayout(seleccionesPanel, BoxLayout.Y_AXIS));
-        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 300)));
+        GridLayout gridlayout = new GridLayout(1, 2);
+        gridlayout.setVgap(10);
+        gridlayout.setHgap(10);
+        seleccionesPanel.setLayout(gridlayout);
+        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 150)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
