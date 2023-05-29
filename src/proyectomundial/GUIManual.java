@@ -563,23 +563,30 @@ public class GUIManual extends JFrame {
         String[] mastchMenosGoles = new String[3];
 
         int golesTotales = 0;
-        int golesLocal = 0;
-        int golesVisitante = 0;
+        int golesLocalTotales = 0;
+        int golesVisitanteTotales = 0;
+
         int partidoMasgoles = 0;
         int partidoMenosgoles = 0;
         int auxMaxGoles = 0;
+        int numeroPartidosEmpatados = 0;
+        int numeroPartidosGanador = 0;
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
 
         for (int i = 0; i < Datos2.length; i++) {
-            golesLocal += Integer.parseInt(Datos2[i][5]);
+            golesLocalTotales += Integer.parseInt(Datos2[i][5]);
 
-            golesVisitante += Integer.parseInt(Datos2[i][6]);
+            golesVisitanteTotales += Integer.parseInt(Datos2[i][6]);
 
             int partidoActual = Integer.parseInt(Datos2[i][5]) + Integer.parseInt(Datos2[i][6]);
 
+            int golesLocal = Integer.parseInt(Datos2[i][5]);
+            int golesVisitante = Integer.parseInt(Datos2[i][6]);
+
             auxMaxGoles = partidoMasgoles;
 
+            //Calcula el partido con mas goles
             if (partidoActual >= (auxMaxGoles)) {
 
                 partidoMasgoles = partidoActual;
@@ -588,7 +595,7 @@ public class GUIManual extends JFrame {
                 mastchMasGoles[2] = Datos2[i][2];
 
             }
-            
+            //Calcula el partido con menos goles
             int auxMinGoles = partidoMenosgoles;
 
             if (partidoActual <= (auxMinGoles)) {
@@ -601,26 +608,36 @@ public class GUIManual extends JFrame {
 
             }
 
+            //Calcula partidos con ganador y empatados
+            if (golesLocal != golesVisitante) {
+                numeroPartidosGanador++;
+            }
+            if (golesLocal == golesVisitante) {
+                numeroPartidosEmpatados++;
+            }
+
         }
 
-        golesTotales = golesLocal + golesVisitante;
+        golesTotales = golesLocalTotales + golesVisitanteTotales;
 
         int promedioGoles = golesTotales / partidosCargados;
 
         JLabel PromedioGoles = new JLabel();
         JLabel PartidoMasGoles = new JLabel();
         JLabel PartidoMenosGoles = new JLabel();
+        JLabel PartidoEmpateOGanados = new JLabel();
         PromedioGoles.setText("Partidos cargados: " + partidosCargados + "\n"
                 + "El promedio de goles es: " + promedioGoles);
 
         PartidoMasGoles.setText("Partido mas goles: " + mastchMasGoles[1] + " vs " + mastchMasGoles[2] + " con un total de " + partidoMasgoles + " goles.");
         PartidoMenosGoles.setText("Partido menos goles: " + mastchMenosGoles[1] + " vs " + mastchMenosGoles[2] + " con un total de " + partidoMenosgoles + " goles.");
-
+        PartidoEmpateOGanados.setText("Cantidad de partidos empatados es: " + numeroPartidosEmpatados + " Cantidad de partidos ganados: " + numeroPartidosGanador);
         jPanelMain.removeAll();
         jPanelMain.add(a);
         jPanelMain.add(PromedioGoles);
         jPanelMain.add(PartidoMasGoles);
         jPanelMain.add(PartidoMenosGoles);
+        jPanelMain.add(PartidoEmpateOGanados);
         jPanelMain.repaint();
         jPanelMain.revalidate();
     }
