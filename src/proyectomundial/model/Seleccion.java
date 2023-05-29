@@ -26,6 +26,9 @@ public class Seleccion {
     String pagina;
     String contador;
 
+    String equipo;
+    int goles_totales;
+
     public Seleccion() {
     }
 
@@ -41,9 +44,15 @@ public class Seleccion {
         this.dt = dt;
     }
 
-    public Seleccion(String pagina, String contador){
+    public Seleccion(String pagina, String contador) {
         this.pagina = pagina;
         this.contador = contador;
+
+    }
+
+    public Seleccion(String equipo, int goles_totales) {
+        this.equipo = equipo;
+        this.goles_totales = goles_totales;
     }
 
     public Seleccion(String grupo, String local, String visitante, String continente_l, String continente_v, String goles_l, String goles_v) {
@@ -54,6 +63,24 @@ public class Seleccion {
         this.continente_v = continente_v;
         this.goles_l = goles_l;
         this.goles_v = goles_v;
+    }
+
+    public void setGoles(int goles_totales) {
+        this.goles_totales = goles_totales;
+    }
+
+    public String getEquipo() {
+        return equipo;
+    }
+
+    public void setEquipo(String equipo) {
+        this.equipo = equipo;
+    }
+
+    
+
+    public int getGoles() {
+        return goles_totales;
     }
 
     public String getPagina() {

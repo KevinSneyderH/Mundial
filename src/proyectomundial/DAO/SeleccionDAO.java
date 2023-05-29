@@ -71,6 +71,42 @@ public class SeleccionDAO {
         return registro;
     }
 
+    public List<Seleccion> getRankingGoles() {
+
+        String sql = "SELECT equipo, SUM(total_goles) AS goles_totales\n"
+                + "FROM\n"
+                + "(\n"
+                + "    SELECT \"local\" AS equipo, goles_local AS total_goles\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + "    \n"
+                + "    UNION ALL\n"
+                + "    \n"
+                + "    SELECT visitante AS equipo, goles_visitante AS total_goles\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + ") subquery\n"
+                + "GROUP BY equipo\n"
+                + "ORDER BY goles_totales DESC;";
+
+        List<Seleccion> equipos = new ArrayList<Seleccion>();
+
+        try {
+            ResultSet result = BasedeDatos.ejecutarSQL(sql);
+
+            if (result != null) {
+
+                while (result.next()) {
+                    Seleccion equipoGoles = new Seleccion(result.getString("equipo"), Integer.parseInt(result.getString("goles_totales")));
+                    equipos.add(equipoGoles);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println("Error consultando selecciones");
+        }
+
+        return equipos;
+    }
+
     public List<Seleccion> getNacionalidades() {
 
         String sql = "select distinct nacionalidad, dt from k_hernandez8.seleccion";
@@ -252,6 +288,30 @@ public class SeleccionDAO {
         return matrizbusqueda;
     }
 
+    public String[][] getMatrizRankingGoles() {
+        List<Seleccion> selecciones = getRankingGoles();
+ 
+        String[][] RankingGoles = null;
+
+        if (selecciones != null && selecciones.size() > 0) {
+            RankingGoles = new String[selecciones.size()][2];
+
+            try {
+                int x = 0;
+                for (Seleccion seleccion : selecciones) {
+                    RankingGoles[x][0] = seleccion.getEquipo();
+                    RankingGoles[x][1] = String.valueOf(seleccion.getGoles());
+                    x++;
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR");
+                RankingGoles = new String[0][0];
+            }
+        }
+
+        return RankingGoles;
+    }
+
     public String[][] getBusquedaResultadosMatriz(JTextField field) {
 
         String[][] matrizSelecciones = null;
@@ -334,7 +394,7 @@ public class SeleccionDAO {
             int x = 0;
             for (Seleccion seleccion : selecciones) {
                 matrizNaciaonalidades[x][0] = seleccion.getDt();
-                matrizNaciaonalidades[x][1] = seleccion.getNacionalidad();     
+                matrizNaciaonalidades[x][1] = seleccion.getNacionalidad();
                 x++;
             }
         }
