@@ -578,21 +578,30 @@ public class GUIManual extends JFrame {
         String Datos[][] = seleccionDAO.getMatrizRankingGoles();
 
         String Datos3[][] = seleccionDAO.getMatrizRankingEquipos();
+        
+        String Datos4[][] = seleccionDAO.getMatrizContinentesGoles();
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
+        
+        
 
         String Columnas[] = {"Equipos", "Goles Totales"};
 
         String Columnas2[] = {"Equipos", "Puntos"};
+        
+        String Columnas3[] = {"Continentes", "Goles"};
 
         JTable rankingGoles = new JTable(Datos, Columnas);
         JTable rankingEquipos = new JTable(Datos3, Columnas2);
+        JTable continenteGoles = new JTable(Datos4, Columnas3);
 
         rankingEquipos.setRowHeight(30);
         rankingGoles.setRowHeight(30);
+        continenteGoles.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(rankingGoles);
         JScrollPane scrollPane2 = new JScrollPane(rankingEquipos);
+        JScrollPane scrollPane3 = new JScrollPane(continenteGoles);
 
         for (int i = 0; i < Datos2.length; i++) {
             golesLocalTotales += Integer.parseInt(Datos2[i][5]);
@@ -661,6 +670,7 @@ public class GUIManual extends JFrame {
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
+        seleccionesPanel.add(scrollPane3);
 
         jPanelMain.removeAll();
      

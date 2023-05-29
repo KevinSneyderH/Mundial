@@ -154,6 +154,42 @@ public class SeleccionDAO {
         return equipos;
     }
 
+    public List<Seleccion> getContinentesGoles() {
+
+        String sql = "SELECT continente, SUM(total_goles) AS goles_totales\n"
+                + "FROM\n"
+                + "(\n"
+                + "    SELECT continente_local AS continente, goles_local AS total_goles\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + "    \n"
+                + "    UNION ALL\n"
+                + "    \n"
+                + "    SELECT continente_visitante AS continente, goles_visitante AS total_goles\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + ") AS goles_continentes\n"
+                + "GROUP BY continente;";
+
+        List<Seleccion> equipos = new ArrayList<Seleccion>();
+
+        try {
+            ResultSet result = BasedeDatos.ejecutarSQL(sql);
+
+            if (result != null) {
+
+                while (result.next()) {
+                    Seleccion equipoGoles = new Seleccion(result.getString("continente"), Integer.parseInt(result.getString("goles_totales")));
+                    System.out.println(Integer.parseInt(result.getString("goles_totales")));
+                    equipos.add(equipoGoles);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println("Error consultando selecciones");
+        }
+
+        return equipos;
+    }
+
     public List<Seleccion> getNacionalidades() {
 
         String sql = "select distinct nacionalidad, dt from k_hernandez8.seleccion";
@@ -358,9 +394,33 @@ public class SeleccionDAO {
 
         return RankingGoles;
     }
-    
+
     public String[][] getMatrizRankingEquipos() {
         List<Seleccion> selecciones = getRankingEquipos();
+
+        String[][] RankingGoles = null;
+
+        if (selecciones != null && selecciones.size() > 0) {
+            RankingGoles = new String[selecciones.size()][2];
+
+            try {
+                int x = 0;
+                for (Seleccion seleccion : selecciones) {
+                    RankingGoles[x][0] = seleccion.getEquipo();
+                    RankingGoles[x][1] = String.valueOf(seleccion.getGoles());
+                    x++;
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR");
+                RankingGoles = new String[0][0];
+            }
+        }
+
+        return RankingGoles;
+    }
+    
+    public String[][] getMatrizContinentesGoles() {
+        List<Seleccion> selecciones = getContinentesGoles();
 
         String[][] RankingGoles = null;
 
