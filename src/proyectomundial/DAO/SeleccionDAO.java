@@ -107,6 +107,53 @@ public class SeleccionDAO {
         return equipos;
     }
 
+    public List<Seleccion> getRankingEquipos() {
+
+        String sql = "SELECT equipo, SUM(puntos) AS total_puntos\n"
+                + "FROM\n"
+                + "(\n"
+                + "    SELECT \"local\" AS equipo,\n"
+                + "           CASE\n"
+                + "               WHEN goles_local > goles_visitante THEN 3\n"
+                + "               WHEN goles_local = goles_visitante THEN 1\n"
+                + "               ELSE 0\n"
+                + "           END AS puntos\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + "    \n"
+                + "    UNION ALL\n"
+                + "    \n"
+                + "    SELECT visitante AS equipo,\n"
+                + "           CASE\n"
+                + "               WHEN goles_visitante > goles_local THEN 3\n"
+                + "               WHEN goles_visitante = goles_local THEN 1\n"
+                + "               ELSE 0\n"
+                + "           END AS puntos\n"
+                + "    FROM k_hernandez8.partidos\n"
+                + ") AS equipos_puntos\n"
+                + "GROUP BY equipo\n"
+                + "ORDER BY total_puntos DESC;";
+
+        List<Seleccion> equipos = new ArrayList<Seleccion>();
+
+        try {
+            ResultSet result = BasedeDatos.ejecutarSQL(sql);
+
+            if (result != null) {
+
+                while (result.next()) {
+                    Seleccion equipoGoles = new Seleccion(result.getString("equipo"), Integer.parseInt(result.getString("total_puntos")));
+                    System.out.println(Integer.parseInt(result.getString("total_puntos")));
+                    equipos.add(equipoGoles);
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e.toString());
+            System.out.println("Error consultando selecciones");
+        }
+
+        return equipos;
+    }
+
     public List<Seleccion> getNacionalidades() {
 
         String sql = "select distinct nacionalidad, dt from k_hernandez8.seleccion";
@@ -290,7 +337,31 @@ public class SeleccionDAO {
 
     public String[][] getMatrizRankingGoles() {
         List<Seleccion> selecciones = getRankingGoles();
- 
+
+        String[][] RankingGoles = null;
+
+        if (selecciones != null && selecciones.size() > 0) {
+            RankingGoles = new String[selecciones.size()][2];
+
+            try {
+                int x = 0;
+                for (Seleccion seleccion : selecciones) {
+                    RankingGoles[x][0] = seleccion.getEquipo();
+                    RankingGoles[x][1] = String.valueOf(seleccion.getGoles());
+                    x++;
+                }
+            } catch (Exception e) {
+                System.out.println("ERROR");
+                RankingGoles = new String[0][0];
+            }
+        }
+
+        return RankingGoles;
+    }
+    
+    public String[][] getMatrizRankingEquipos() {
+        List<Seleccion> selecciones = getRankingEquipos();
+
         String[][] RankingGoles = null;
 
         if (selecciones != null && selecciones.size() > 0) {

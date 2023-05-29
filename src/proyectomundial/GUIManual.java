@@ -558,8 +558,6 @@ public class GUIManual extends JFrame {
                 + "7. Continente o continentes con más goles y menos goles \n"
                 + "8. Clasificados por cada grupo (Clasifican los dos primeros equipos de cada grupo) \n\n"
                 + "Utilice los diferentes componentes gráficos para construir un dashboard lo más estético posible");
-        
-        
 
         int partidosCargados = seleccionDAO.getResultados().size();
         String[] mastchMasGoles = new String[3];
@@ -575,17 +573,25 @@ public class GUIManual extends JFrame {
         int numeroPartidosEmpatados = 0;
         int numeroPartidosGanador = 0;
 
+        
         String Datos[][] = seleccionDAO.getMatrizRankingGoles();
+
+        String Datos3[][] = seleccionDAO.getMatrizRankingEquipos();
 
         String Datos2[][] = seleccionDAO.getResultadosMatriz();
 
         String Columnas[] = {"Equipos", "Goles Totales"};
 
-        JTable rankingGoles = new JTable(Datos, Columnas);
+        String Columnas2[] = {"Equipos", "Puntos"};
 
+        JTable rankingGoles = new JTable(Datos, Columnas);
+        JTable rankingEquipos = new JTable(Datos3, Columnas2);
+
+        rankingEquipos.setRowHeight(30);
         rankingGoles.setRowHeight(30);
 
         JScrollPane scrollPane = new JScrollPane(rankingGoles);
+        JScrollPane scrollPane2 = new JScrollPane(rankingEquipos);
 
         for (int i = 0; i < Datos2.length; i++) {
             golesLocalTotales += Integer.parseInt(Datos2[i][5]);
@@ -644,16 +650,16 @@ public class GUIManual extends JFrame {
         PartidoMasGoles.setText("Partido mas goles: " + mastchMasGoles[1] + " vs " + mastchMasGoles[2] + " con un total de " + partidoMasgoles + " goles.");
         PartidoMenosGoles.setText("Partido menos goles: " + mastchMenosGoles[1] + " vs " + mastchMenosGoles[2] + " con un total de " + partidoMenosgoles + " goles.");
         PartidoEmpateOGanados.setText("Cantidad de partidos empatados es: " + numeroPartidosEmpatados + " Cantidad de partidos ganados: " + numeroPartidosGanador);
-       
+
         JPanel seleccionesPanel = new JPanel();
         seleccionesPanel.setLayout(new BoxLayout(seleccionesPanel, BoxLayout.Y_AXIS));
-        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 100)));
+        seleccionesPanel.setPreferredSize((new java.awt.Dimension(620, 300)));
         seleccionesPanel.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel.add(scrollPane);
-        
-        
+        seleccionesPanel.add(scrollPane2);
+
         jPanelMain.removeAll();
-        jPanelMain.add(a);
+     
         jPanelMain.add(PromedioGoles);
         jPanelMain.add(PartidoMasGoles);
         jPanelMain.add(PartidoMenosGoles);
