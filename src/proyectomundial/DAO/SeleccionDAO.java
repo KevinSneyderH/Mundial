@@ -142,7 +142,6 @@ public class SeleccionDAO {
 
                 while (result.next()) {
                     Seleccion equipoGoles = new Seleccion(result.getString("equipo"), Integer.parseInt(result.getString("total_puntos")));
-                    System.out.println(Integer.parseInt(result.getString("total_puntos")));
                     equipos.add(equipoGoles);
                 }
             }
@@ -196,9 +195,8 @@ public class SeleccionDAO {
             if (result != null) {
 
                 while (result.next()) {
-                    
+
                     Seleccion equipoGoles = new Seleccion(result.getString("equipo"), result.getString("grupo"), Integer.parseInt(result.getString("total_puntos")));
-                    System.out.println(result.getString("grupo"));
                     equipos.add(equipoGoles);
                 }
             }
@@ -234,7 +232,6 @@ public class SeleccionDAO {
 
                 while (result.next()) {
                     Seleccion equipoGoles = new Seleccion(result.getString("continente"), Integer.parseInt(result.getString("goles_totales")));
-                    System.out.println(Integer.parseInt(result.getString("goles_totales")));
                     equipos.add(equipoGoles);
                 }
             }

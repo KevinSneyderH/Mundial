@@ -674,16 +674,12 @@ public class GUIManual extends JFrame {
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
         seleccionesPanel.add(scrollPane3);
-        
-        
-        
-        
+
         JPanel seleccionesPanel2 = new JPanel();
         seleccionesPanel2.setLayout(new BoxLayout(seleccionesPanel2, BoxLayout.X_AXIS));
         seleccionesPanel2.setPreferredSize((new java.awt.Dimension(620, 200)));
         seleccionesPanel2.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel2.add(scrollPane4);
-
 
         jPanelMain.removeAll();
 
