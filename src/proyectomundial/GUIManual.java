@@ -545,21 +545,6 @@ public class GUIManual extends JFrame {
         jLabelTop.setText("Dash Resultados");
         seleccionDAO.ActualizarVistas(paginaVisitada);
 
-        String xd[][] = seleccionDAO.getSeleccionesMatriz();
-
-        JTextArea a = new JTextArea();
-        a.setText("En esta sección, teniendo en cuenta los datos que fueron cargados en la matriz de resultados \n"
-                + "se deben mostrar los siguientes datos:\n\n"
-                + "1. Número de partidos cargados \n"
-                + "2. Promedio de goles por partido \n"
-                + "3. Partido con más goles y partido con menos goles \n"
-                + "4. Número de partidos dónde hubo un ganador y número de partidos dónde hubo empate \n"
-                + "5. Selección o selecciones con más goles y con menos goles \n"
-                + "6. Selección con más puntos y menos puntos \n"
-                + "7. Continente o continentes con más goles y menos goles \n"
-                + "8. Clasificados por cada grupo (Clasifican los dos primeros equipos de cada grupo) \n\n"
-                + "Utilice los diferentes componentes gráficos para construir un dashboard lo más estético posible");
-
         int partidosCargados = seleccionDAO.getResultados().size();
         String[] mastchMasGoles = new String[3];
         String[] mastchMenosGoles = new String[3];
@@ -674,20 +659,28 @@ public class GUIManual extends JFrame {
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
         seleccionesPanel.add(scrollPane3);
-
+        
+        
+        
+        
         JPanel seleccionesPanel2 = new JPanel();
         seleccionesPanel2.setLayout(new BoxLayout(seleccionesPanel2, BoxLayout.X_AXIS));
-        seleccionesPanel2.setPreferredSize((new java.awt.Dimension(620, 200)));
+        seleccionesPanel2.setPreferredSize((new java.awt.Dimension(620, 190)));
         seleccionesPanel2.setMaximumSize(jPanelRight.getPreferredSize());
         seleccionesPanel2.add(scrollPane4);
 
+        JPanel labelsizq = new JPanel();
+        labelsizq.setPreferredSize((new java.awt.Dimension(620, 90)));
+        
+        labelsizq.setMaximumSize(jPanelRight.getPreferredSize());
+        labelsizq.add(PromedioGoles,BorderLayout.CENTER);
+        labelsizq.add(PartidoMasGoles);
+        labelsizq.add(PartidoMenosGoles);
+        labelsizq.add(PartidoEmpateOGanados);
+        labelsizq.add(PartidoEmpateOGanados);
+        
         jPanelMain.removeAll();
-
-        jPanelMain.add(PromedioGoles);
-        jPanelMain.add(PartidoMasGoles);
-        jPanelMain.add(PartidoMenosGoles);
-        jPanelMain.add(PartidoEmpateOGanados);
-        jPanelMain.add(PartidoEmpateOGanados);
+        jPanelMain.add(labelsizq, BorderLayout.PAGE_START);
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
         jPanelMain.add(seleccionesPanel2, BorderLayout.PAGE_START);
         jPanelMain.repaint();
