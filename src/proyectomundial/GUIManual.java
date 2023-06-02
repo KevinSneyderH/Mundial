@@ -2,6 +2,7 @@ package proyectomundial;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.Label;
@@ -25,6 +26,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import proyectomundial.DAO.SeleccionDAO;
 import proyectomundial.model.Seleccion;
@@ -578,42 +580,90 @@ public class GUIManual extends JFrame {
         String Columnas3[] = {"Continentes", "Goles"};
 
         String Columnas4[] = {"Equipo Clasificado", "Grupo", "Puntos"};
+        
+        //Colores para que se vea mejor.
+        Color blanco = new Color(239, 239, 239);
+        Color azulOscuro = new Color(0, 24, 47);
+        Color azulClarito = new Color(18, 119, 217);
+        Color azulpoquitoClarito = new Color(17, 41, 63);
+        
 
         DefaultTableModel rankingGoles = new DefaultTableModel(Datos, Columnas) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hacer todas las celdas no editables
+                return false; 
             }
         };
+        
+        
 
         DefaultTableModel rankingEquipos = new DefaultTableModel(Datos3, Columnas2) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hacer todas las celdas no editables
+                return false; 
             }
         };
 
         DefaultTableModel continenteGoles = new DefaultTableModel(Datos4, Columnas3) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hacer todas las celdas no editables
+                return false; 
             }
         };
 
         DefaultTableModel Clasificados = new DefaultTableModel(Datos5, Columnas4) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Hacer todas las celdas no editables
+                return false; 
             }
         };
+        
+        DefaultTableCellRenderer cellRenderer = new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
+                                                           boolean hasFocus, int row, int column) {
+                // Llamar al método padre para obtener el componente por defecto
+                Component component = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
+                // Establecer colores personalizados para las celdas
+                if (row % 2 == 0) { // Fila par
+                    component.setBackground(azulpoquitoClarito);
+                } else { // Fila impar
+                    component.setBackground(azulOscuro);
+                }
+
+                // Establecer el color de texto
+                component.setForeground(blanco);
+
+                return component;
+            }
+        };
+        
         JTable table = new JTable(rankingGoles);
+
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            table.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
+        
         JTable table2 = new JTable(rankingEquipos);
+        
+        for (int i = 0; i < table2.getColumnCount(); i++) {
+            table2.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
+        
         JTable table3 = new JTable(continenteGoles);
+        
+        for (int i = 0; i < table3.getColumnCount(); i++) {
+            table3.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
+        
         JTable table4 = new JTable(Clasificados);
+        
+        for (int i = 0; i < table4.getColumnCount(); i++) {
+            table4.getColumnModel().getColumn(i).setCellRenderer(cellRenderer);
+        }
 
         JScrollPane scrollPane = new JScrollPane(table);
-
         JScrollPane scrollPane2 = new JScrollPane(table2);
         JScrollPane scrollPane3 = new JScrollPane(table3);
         JScrollPane scrollPane4 = new JScrollPane(table4);
@@ -670,11 +720,6 @@ public class GUIManual extends JFrame {
         String continenteMasgoles[] = new String[2];
         continenteMasgoles[0] = Datos4[0][0];
 
-        //Colores para que se vea mejor.
-        Color blanco = new Color(239, 239, 239);
-        Color azulOscuro = new Color(0, 24, 47);
-        Color azulClarito = new Color(18, 119, 217);
-
         //Se ponen todos los datos en Jlabels para luego mostrarlos en el JPanelmain
         JLabel PartidosCargados = new JLabel("Partidos cargados: " + partidosCargados);
         JLabel PromedioGoles = new JLabel("El promedio de goles es: " + promedioGoles);
@@ -685,12 +730,15 @@ public class GUIManual extends JFrame {
         JLabel EquipoMasGoles = new JLabel("El equipo con mas goles fue: " + equipoMasgoles[0]);
         JLabel ContinenteMasGoles = new JLabel("El continente con mas goles fue: " + continenteMasgoles[0]);
         
-        //Se les asigna el color blanco a algunos JLabel
+        //Se les asigna el color blanco los JLabel
         PartidosCargados.setForeground(blanco);
         PartidoMasGoles.setForeground(blanco);
         PartidoEmpate.setForeground(blanco);
         EquipoMasGoles.setForeground(blanco);
-
+        PromedioGoles.setForeground(blanco);
+        PartidoMenosGoles.setForeground(blanco);
+        PartidoGanados.setForeground(blanco);
+        ContinenteMasGoles.setForeground(blanco);      
         JPanel seleccionesPanel = new JPanel();
         GridLayout gridlayout = new GridLayout(1, 2);
         gridlayout.setVgap(10);
@@ -711,22 +759,26 @@ public class GUIManual extends JFrame {
         JPanel labelsizq = new JPanel();
         labelsizq.setPreferredSize((new java.awt.Dimension(310, 90)));
         labelsizq.setMaximumSize(jPanelRight.getPreferredSize());
-        Border border = BorderFactory.createLineBorder(blanco, 2);
+        Border border = BorderFactory.createLineBorder(azulClarito, 2);
         
-        //Se le agrega color a un panel
+        //Se le agrega color al panel izquierdo y al borde
         labelsizq.setBackground(azulOscuro);
         labelsizq.setBorder(border);
+        
         labelsizq.add(PartidosCargados);
         labelsizq.add(PartidoMasGoles);
         labelsizq.add(PartidoMenosGoles);
         labelsizq.add(PartidoEmpate);
         labelsizq.add(EquipoMasGoles);
+        
+        
 
         JPanel labelsder = new JPanel();
         labelsder.setPreferredSize((new java.awt.Dimension(310, 90)));
         labelsder.setMaximumSize(jPanelRight.getPreferredSize());
         
-        //Se le agrega color al borde
+        //Se le agrega color al borde y al panel derecho
+        labelsder.setBackground(azulOscuro);
         Border border2 = BorderFactory.createLineBorder(azulClarito, 2);
         labelsder.setBorder(border2);
         labelsder.add(PromedioGoles);
@@ -735,7 +787,9 @@ public class GUIManual extends JFrame {
         labelsder.add(ContinenteMasGoles);
         JPanel containsLabels = new JPanel();
         containsLabels.setPreferredSize((new java.awt.Dimension(620, 90)));
-        containsLabels.setLayout(new GridLayout(1, 1, 0, 0));
+        GridLayout layoutgrid = new GridLayout(1, 1, 0, 0);
+        layoutgrid.setHgap(15);
+        containsLabels.setLayout(layoutgrid);
         containsLabels.add(labelsizq);
         containsLabels.add(labelsder);
 
