@@ -24,6 +24,8 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
+import javax.swing.table.DefaultTableModel;
 import proyectomundial.DAO.SeleccionDAO;
 import proyectomundial.model.Seleccion;
 
@@ -577,19 +579,44 @@ public class GUIManual extends JFrame {
 
         String Columnas4[] = {"Equipo Clasificado", "Grupo", "Puntos"};
 
-        JTable rankingGoles = new JTable(Datos, Columnas);
-        JTable rankingEquipos = new JTable(Datos3, Columnas2);
-        JTable continenteGoles = new JTable(Datos4, Columnas3);
-        JTable Clasificados = new JTable(Datos5, Columnas4);
-        rankingEquipos.setRowHeight(30);
-        rankingGoles.setRowHeight(30);
-        continenteGoles.setRowHeight(30);
-        Clasificados.setRowHeight(30);
+        DefaultTableModel rankingGoles = new DefaultTableModel(Datos, Columnas) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer todas las celdas no editables
+            }
+        };
 
-        JScrollPane scrollPane = new JScrollPane(rankingGoles);
-        JScrollPane scrollPane2 = new JScrollPane(rankingEquipos);
-        JScrollPane scrollPane3 = new JScrollPane(continenteGoles);
-        JScrollPane scrollPane4 = new JScrollPane(Clasificados);
+        DefaultTableModel rankingEquipos = new DefaultTableModel(Datos3, Columnas2) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer todas las celdas no editables
+            }
+        };
+
+        DefaultTableModel continenteGoles = new DefaultTableModel(Datos4, Columnas3) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer todas las celdas no editables
+            }
+        };
+
+        DefaultTableModel Clasificados = new DefaultTableModel(Datos5, Columnas4) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Hacer todas las celdas no editables
+            }
+        };
+
+        JTable table = new JTable(rankingGoles);
+        JTable table2 = new JTable(rankingEquipos);
+        JTable table3 = new JTable(continenteGoles);
+        JTable table4 = new JTable(Clasificados);
+
+        JScrollPane scrollPane = new JScrollPane(table);
+
+        JScrollPane scrollPane2 = new JScrollPane(table2);
+        JScrollPane scrollPane3 = new JScrollPane(table3);
+        JScrollPane scrollPane4 = new JScrollPane(table4);
 
         for (int i = 0; i < Datos2.length; i++) {
             golesLocalTotales += Integer.parseInt(Datos2[i][5]);
@@ -637,17 +664,32 @@ public class GUIManual extends JFrame {
         golesTotales = golesLocalTotales + golesVisitanteTotales;
 
         int promedioGoles = golesTotales / partidosCargados;
+        String equipoMasgoles[] = new String[2];
+        equipoMasgoles[0] = Datos[0][0];
 
-        JLabel PromedioGoles = new JLabel();
-        JLabel PartidoMasGoles = new JLabel();
-        JLabel PartidoMenosGoles = new JLabel();
-        JLabel PartidoEmpateOGanados = new JLabel();
-        PromedioGoles.setText("Partidos cargados: " + partidosCargados + "\n"
-                + "El promedio de goles es: " + promedioGoles);
+        String continenteMasgoles[] = new String[2];
+        continenteMasgoles[0] = Datos4[0][0];
 
-        PartidoMasGoles.setText("Partido mas goles: " + mastchMasGoles[1] + " vs " + mastchMasGoles[2] + " con un total de " + partidoMasgoles + " goles.");
-        PartidoMenosGoles.setText("Partido menos goles: " + mastchMenosGoles[1] + " vs " + mastchMenosGoles[2] + " con un total de " + partidoMenosgoles + " goles.");
-        PartidoEmpateOGanados.setText("Cantidad de partidos empatados es: " + numeroPartidosEmpatados + " Cantidad de partidos ganados: " + numeroPartidosGanador);
+        //Colores para que se vea mejor.
+        Color blanco = new Color(239, 239, 239);
+        Color azulOscuro = new Color(0, 24, 47);
+        Color azulClarito = new Color(18, 119, 217);
+
+        //Se ponen todos los datos en Jlabels para luego mostrarlos en el JPanelmain
+        JLabel PartidosCargados = new JLabel("Partidos cargados: " + partidosCargados);
+        JLabel PromedioGoles = new JLabel("El promedio de goles es: " + promedioGoles);
+        JLabel PartidoMasGoles = new JLabel("Partido mas goles: " + mastchMasGoles[1] + " vs " + mastchMasGoles[2]);
+        JLabel PartidoMenosGoles = new JLabel("Partido menos goles: " + mastchMenosGoles[1] + " vs " + mastchMenosGoles[2]);
+        JLabel PartidoGanados = new JLabel("Cantidad de partidos ganados: " + numeroPartidosGanador);
+        JLabel PartidoEmpate = new JLabel("Cantidad de partidos empatados es: " + numeroPartidosEmpatados);
+        JLabel EquipoMasGoles = new JLabel("El equipo con mas goles fue: " + equipoMasgoles[0]);
+        JLabel ContinenteMasGoles = new JLabel("El continente con mas goles fue: " + continenteMasgoles[0]);
+        
+        //Se les asigna el color blanco a algunos JLabel
+        PartidosCargados.setForeground(blanco);
+        PartidoMasGoles.setForeground(blanco);
+        PartidoEmpate.setForeground(blanco);
+        EquipoMasGoles.setForeground(blanco);
 
         JPanel seleccionesPanel = new JPanel();
         GridLayout gridlayout = new GridLayout(1, 2);
@@ -659,10 +701,7 @@ public class GUIManual extends JFrame {
         seleccionesPanel.add(scrollPane);
         seleccionesPanel.add(scrollPane2);
         seleccionesPanel.add(scrollPane3);
-        
-        
-        
-        
+
         JPanel seleccionesPanel2 = new JPanel();
         seleccionesPanel2.setLayout(new BoxLayout(seleccionesPanel2, BoxLayout.X_AXIS));
         seleccionesPanel2.setPreferredSize((new java.awt.Dimension(620, 190)));
@@ -670,17 +709,38 @@ public class GUIManual extends JFrame {
         seleccionesPanel2.add(scrollPane4);
 
         JPanel labelsizq = new JPanel();
-        labelsizq.setPreferredSize((new java.awt.Dimension(620, 90)));
-        
+        labelsizq.setPreferredSize((new java.awt.Dimension(310, 90)));
         labelsizq.setMaximumSize(jPanelRight.getPreferredSize());
-        labelsizq.add(PromedioGoles,BorderLayout.CENTER);
+        Border border = BorderFactory.createLineBorder(blanco, 2);
+        
+        //Se le agrega color a un panel
+        labelsizq.setBackground(azulOscuro);
+        labelsizq.setBorder(border);
+        labelsizq.add(PartidosCargados);
         labelsizq.add(PartidoMasGoles);
         labelsizq.add(PartidoMenosGoles);
-        labelsizq.add(PartidoEmpateOGanados);
-        labelsizq.add(PartidoEmpateOGanados);
+        labelsizq.add(PartidoEmpate);
+        labelsizq.add(EquipoMasGoles);
+
+        JPanel labelsder = new JPanel();
+        labelsder.setPreferredSize((new java.awt.Dimension(310, 90)));
+        labelsder.setMaximumSize(jPanelRight.getPreferredSize());
         
+        //Se le agrega color al borde
+        Border border2 = BorderFactory.createLineBorder(azulClarito, 2);
+        labelsder.setBorder(border2);
+        labelsder.add(PromedioGoles);
+        labelsder.add(PartidoMenosGoles);
+        labelsder.add(PartidoGanados);
+        labelsder.add(ContinenteMasGoles);
+        JPanel containsLabels = new JPanel();
+        containsLabels.setPreferredSize((new java.awt.Dimension(620, 90)));
+        containsLabels.setLayout(new GridLayout(1, 1, 0, 0));
+        containsLabels.add(labelsizq);
+        containsLabels.add(labelsder);
+
         jPanelMain.removeAll();
-        jPanelMain.add(labelsizq, BorderLayout.PAGE_START);
+        jPanelMain.add(containsLabels, BorderLayout.PAGE_START);
         jPanelMain.add(seleccionesPanel, BorderLayout.PAGE_START);
         jPanelMain.add(seleccionesPanel2, BorderLayout.PAGE_START);
         jPanelMain.repaint();
